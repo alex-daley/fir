@@ -60,12 +60,17 @@ namespace fir
             return parse_number<int>(string());
         }
 
+        parse_result<double> parse_double() const
+        {
+            return parse_number<double>(string());
+        }
+
     private:
         template <typename T>
         static parse_result<T> parse_number(const std::string str)
         {
-            auto parsed_int = -1;
-            auto [last, err] = std::from_chars(str.data(), str.data() + str.size(), parsed_int);
+            T number = (T)-1;
+            auto [last, err] = std::from_chars(str.data(), str.data() + str.size(), number);
 
             if (err != std::errc()) 
                 return parse_result<T>(err, 0);
@@ -74,7 +79,7 @@ namespace fir
             if (*last != '\0') 
                 return parse_result<T>(std::errc::invalid_argument, 0);
 
-            return parse_result<T>(std::errc(), parsed_int);
+            return parse_result<T>(std::errc(), number);
         }
 
         std::string m_input;
