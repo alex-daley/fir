@@ -1,10 +1,13 @@
 #ifndef FIR_HPP
 #define FIR_HPP
 
+#include <cstdarg>
+#include <cassert>
 #include <string>
 #include <iostream>
 #include <charconv>
 #include <system_error>
+#include <optional>
 
 namespace fir 
 {
@@ -14,11 +17,17 @@ namespace fir
     public:
         parse_result(std::errc err, T value) : m_err(err), m_value(value)
         {
+            std::optional<int> d = 2;
         }
 
         operator bool() const
         {
             return m_err == std::errc();
+        }
+        
+        constexpr const T operator*() const
+        {
+            return m_value;
         }
 
         std::errc err() const
@@ -92,6 +101,21 @@ namespace fir
             std::string line;
             std::getline(std::cin, line);
             return line;
+        }
+
+        void writeln(const char* format, ...)
+        {
+            va_list args;
+            va_start(args, format);
+         
+            const auto length = std::vsnprintf(nullptr, 0, format, args) + 1;
+            const auto message = new char[length];
+            
+            std::vsnprintf(message, length, format, args);
+            std::printf("%s\n", message);
+            
+            delete[] message;
+            va_end(args);
         }
     }
 }
