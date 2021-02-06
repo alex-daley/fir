@@ -17,3 +17,24 @@ TEST_CASE("console::readln reads line of text from std::cin", "[console]")
     // Restore default `std::cin`.
     std::cin.rdbuf(initial_cin);
 }
+
+TEST_CASE("readln::trim trims whitespace", "[readln]") 
+{
+    constexpr auto expected = "Hello,niceweathertoday!";
+
+    SECTION("trims leading whitespace")
+    {
+        const auto result = fir::readln_result("  Hello,niceweathertoday!");
+        REQUIRE(result.trim().string() == expected);
+    }
+    SECTION("trims trailing whitespace")
+    {
+        const auto result = fir::readln_result("Hello,niceweathertoday!  ");
+        REQUIRE(result.trim().string() == expected);
+    }
+    SECTION("trims intermediate whitespace")
+    {
+        const auto result = fir::readln_result("Hello, nice weather today!");
+        REQUIRE(result.trim().string() == expected);
+    }
+}

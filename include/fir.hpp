@@ -18,6 +18,13 @@ namespace fir
             return m_input; 
         }
 
+        readln_result trim() const
+        {
+            std::string copy = m_input;
+            copy.erase(std::remove_if(copy.begin(), copy.end(), isspace), copy.end());
+            return readln_result(copy);
+        }
+
     private:
         std::string m_input;
     };
