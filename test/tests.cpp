@@ -18,7 +18,7 @@ TEST_CASE("console::readln reads line of text from std::cin", "[console]")
     std::cin.rdbuf(initial_cin);
 }
 
-TEST_CASE("readln::trim trims whitespace", "[readln]") 
+TEST_CASE("readln_result::trim trims whitespace", "[readln_result]") 
 {
     constexpr auto expected = "Hello,niceweathertoday!";
 
@@ -36,5 +36,33 @@ TEST_CASE("readln::trim trims whitespace", "[readln]")
     {
         const auto result = fir::readln_result("Hello, nice weather today!");
         REQUIRE(result.trim().string() == expected);
+    }
+}
+
+TEST_CASE("readln_result::parse_int parses integer", "[readln_result]")
+{
+    SECTION("parses positive integers")
+    {
+        constexpr auto expected = 42;
+        const auto result = fir::readln_result("42");
+        REQUIRE(result.parse_int() == true);
+        REQUIRE(result.parse_int().value() == expected);
+    }
+    SECTION("parses negative integers")
+    {
+        constexpr auto expected = -42;
+        const auto result = fir::readln_result("-42");
+        REQUIRE(result.parse_int() == true);
+        REQUIRE(result.parse_int().value() == expected);
+    }
+    SECTION("does not parse strings with whitespace")
+    {
+        const auto result = fir::readln_result(" 4 2 ");
+        REQUIRE(result.parse_int() == false);
+    }
+    SECTION("does not parse strings with non-numeric characters")
+    {
+        const auto result = fir::readln_result("fourty42two");
+        REQUIRE(result.parse_int() == false);
     }
 }

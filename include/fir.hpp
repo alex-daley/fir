@@ -3,9 +3,39 @@
 
 #include <string>
 #include <iostream>
+#include <charconv>
+#include <system_error>
 
 namespace fir 
 {
+    template <typename T>
+    class parse_result
+    {
+    public:
+        parse_result(std::errc err, T value) : m_err(err), m_value(value)
+        {
+        }
+
+        operator bool() const
+        {
+            return m_err == std::errc();
+        }
+
+        std::errc err() const
+        {
+            return m_err;
+        }
+
+        T value() const
+        {
+            return m_value;
+        }
+
+    private:
+        std::errc m_err;
+        T m_value;
+    };
+
     class readln_result 
     {
     public:
@@ -25,7 +55,28 @@ namespace fir
             return readln_result(copy);
         }
 
+        parse_result<int> parse_int() const
+        {
+            return parse_number<int>(string());
+        }
+
     private:
+        template <typename T>
+        static parse_result<T> parse_number(const std::string str)
+        {
+            auto parsed_int = -1;
+            auto [last, err] = std::from_chars(str.data(), str.data() + str.size(), parsed_int);
+
+            if (err != std::errc()) 
+                return parse_result<T>(err, 0);
+
+            // `last` points to the first unmatched char; we require that all chars match.
+            if (*last != '\0') 
+                return parse_result<T>(std::errc::invalid_argument, 0);
+
+            return parse_result<T>(std::errc(), parsed_int);
+        }
+
         std::string m_input;
     };
 
