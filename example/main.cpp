@@ -2,16 +2,15 @@
 
 int main()
 {
-    using namespace fir;
+	// Copy on write fluent interface.
+	fir::parse_result<int> choice = fir::console::readln()
+		.trim()
+		.parse_int()
+		.between(0, 3);
 
-    auto result = console::readln()
-        .trim()
-        .parse_int().between(0, 3);
-
-    if (result)
-    {
-        console::writeln("%i", *result);
-    }
-    
-    return 0;
+	// Implicilty convertible to bool. 
+	if (choice)
+	{
+		fir::console::writeln("You selected %i!", *choice);
+	}
 }

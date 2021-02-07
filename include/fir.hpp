@@ -3,11 +3,12 @@
 
 #include <cstdarg>
 #include <cassert>
-#include <string>
+
 #include <iostream>
 #include <charconv>
-#include <system_error>
+#include <string>
 #include <optional>
+#include <system_error>
 
 namespace fir 
 {
@@ -17,7 +18,6 @@ namespace fir
     public:
         parse_result(std::errc err, T value) : m_err(err), m_value(value)
         {
-            std::optional<int> d = 2;
         }
 
         operator bool() const
@@ -88,15 +88,19 @@ namespace fir
         template <typename T>
         static parse_result<T> parse_number(const std::string str)
         {
-            T number = (T)-1;
-            auto [last, err] = std::from_chars(str.data(), str.data() + str.size(), number);
+            auto number = (T)-1;
+            const auto [last, err] = std::from_chars(str.data(), str.data() + str.size(), number);
 
-            if (err != std::errc()) 
+            if (err != std::errc())
+            {
                 return parse_result<T>(err, 0);
+            }
 
             // `last` points to the first unmatched char; we require that all chars match.
-            if (*last != '\0') 
+            if (*last != '\0')
+            {
                 return parse_result<T>(std::errc::invalid_argument, 0);
+            }
 
             return parse_result<T>(std::errc(), number);
         }
