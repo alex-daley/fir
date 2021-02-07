@@ -56,10 +56,10 @@ namespace fir
         T m_value;
     };
 
-    class readln_result 
+    class read_result 
     {
     public:
-        readln_result(const std::string& input) : m_input(input)
+        read_result(const std::string& input) : m_input(input)
         {
         }
 
@@ -68,11 +68,11 @@ namespace fir
             return m_input; 
         }
 
-        readln_result trim() const
+        read_result trim() const
         {
             std::string copy = m_input;
             copy.erase(std::remove_if(copy.begin(), copy.end(), isspace), copy.end());
-            return readln_result(copy);
+            return read_result(copy);
         }
 
         parse_result<int> parse_int() const
@@ -133,14 +133,14 @@ namespace fir
 
     namespace console
     {
-        readln_result readln()
+        read_result read_line()
         {
             std::string line;
             std::getline(std::cin, line);
             return line;
         }
 
-        void writeln(const char* format, ...)
+        void write_line(const char* format, ...)
         {
             va_list args;
             va_start(args, format);
