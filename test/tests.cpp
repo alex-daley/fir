@@ -2,7 +2,7 @@
 #include <catch2/catch.hpp>
 #include <fir.hpp>
 
-TEST_CASE("console::readln reads line of text from std::cin", "[console]")
+TEST_CASE("console::read_line reads line of text from std::cin", "[console]")
 {
     // Redirect `std::cin` to `in` controlled by us.
     const auto initial_cin = std::cin.rdbuf();
@@ -18,91 +18,91 @@ TEST_CASE("console::readln reads line of text from std::cin", "[console]")
     std::cin.rdbuf(initial_cin);
 }
 
-TEST_CASE("readln_result::trim trims whitespace", "[readln_result]") 
+TEST_CASE("read_result::trim trims whitespace", "[read_result]") 
 {
     constexpr auto expected = "Hello,niceweathertoday!";
 
     SECTION("trims leading whitespace")
     {
-        const auto result = fir::readln_result("  Hello,niceweathertoday!");
+        const auto result = fir::read_result("  Hello,niceweathertoday!");
         REQUIRE(result.trim().string() == expected);
     }
     SECTION("trims trailing whitespace")
     {
-        const auto result = fir::readln_result("Hello,niceweathertoday!  ");
+        const auto result = fir::read_result("Hello,niceweathertoday!  ");
         REQUIRE(result.trim().string() == expected);
     }
     SECTION("trims intermediate whitespace")
     {
-        const auto result = fir::readln_result("Hello, nice weather today!");
+        const auto result = fir::read_result("Hello, nice weather today!");
         REQUIRE(result.trim().string() == expected);
     }
 }
 
-TEST_CASE("readln_result::parse_int parses integer", "[readln_result]")
+TEST_CASE("read_result::parse_int parses integer", "[read_result]")
 {
     SECTION("parses positive integers")
     {
         constexpr auto expected = 42;
-        const auto result = fir::readln_result("42");
+        const auto result = fir::read_result("42");
         REQUIRE(result.parse_int() == true);
         REQUIRE(result.parse_int().value() == expected);
     }
     SECTION("parses negative integers")
     {
         constexpr auto expected = -42;
-        const auto result = fir::readln_result("-42");
+        const auto result = fir::read_result("-42");
         REQUIRE(result.parse_int() == true);
         REQUIRE(result.parse_int().value() == expected);
     }
     SECTION("does not parse strings with whitespace")
     {
-        const auto result1 = fir::readln_result(" 42");
+        const auto result1 = fir::read_result(" 42");
         REQUIRE(result1.parse_int() == false);
 
-        const auto result2 = fir::readln_result("42 ");
+        const auto result2 = fir::read_result("42 ");
         REQUIRE(result2.parse_int() == false);
 
-        const auto result3 = fir::readln_result("4 2");
+        const auto result3 = fir::read_result("4 2");
         REQUIRE(result3.parse_int() == false);
     }
     SECTION("does not parse strings with non-numeric characters")
     {
-        const auto result = fir::readln_result("fourty42two");
+        const auto result = fir::read_result("fourty42two");
         REQUIRE(result.parse_int() == false);
     }
 }
 
-TEST_CASE("readln_result::parse_double parses double", "[readln_result]")
+TEST_CASE("read_result::parse_double parses double", "[read_result]")
 {
     SECTION("parses positive double")
     {
         constexpr auto expected = 3.14159265359;
-        const auto result = fir::readln_result("3.14159265359");
+        const auto result = fir::read_result("3.14159265359");
         REQUIRE(result.parse_double() == true);
         REQUIRE(result.parse_double().value() == expected);
     }
     SECTION("parses negative double")
     {
         constexpr auto expected = -3.14159265359;
-        const auto result = fir::readln_result("-3.14159265359");
+        const auto result = fir::read_result("-3.14159265359");
         REQUIRE(result.parse_double() == true);
         REQUIRE(result.parse_double().value() == expected);
     }
     SECTION("does not parse strings with whitespace")
     {
-        const auto result1 = fir::readln_result("  3.14159265359");
+        const auto result1 = fir::read_result("  3.14159265359");
         REQUIRE(result1.parse_double() == false);
 
-        const auto result2 = fir::readln_result("3.14159265359 ");
+        const auto result2 = fir::read_result("3.14159265359 ");
         REQUIRE(result2.parse_double() == false);
 
-        const auto result3 = fir::readln_result("3. 14159265359");
+        const auto result3 = fir::read_result("3. 14159265359");
         REQUIRE(result3.parse_double() == false);
     }
     SECTION("does not parse strings with non-numeric characters")
     {
-        const auto result = fir::readln_result("pipipipi3.14159265359");
+        const auto result = fir::read_result("pipipipi3.14159265359");
         REQUIRE(result.parse_double() == false);
     }
 }
