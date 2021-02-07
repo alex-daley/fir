@@ -1,4 +1,7 @@
 # :evergreen_tree: fir
+
+[![Build Status](https://travis-ci.com/alex-daley/fir.svg?branch=main)](https://travis-ci.com/alex-daley/fir)
+
 A single header, C++ 17 library designed to simplify console input parsing.
 
 **Please note that fir is currently a work in progress and is likely to be subject to breaking changes!**
