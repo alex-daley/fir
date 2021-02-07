@@ -1,0 +1,10 @@
+language: cpp
+dist: focal
+compiler: gcc
+
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - cmake --build .
+  - ./test/tests

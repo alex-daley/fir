@@ -4,6 +4,7 @@
 #include <cstdarg>
 #include <cassert>
 
+#include <algorithm>
 #include <iostream>
 #include <charconv>
 #include <string>
@@ -81,7 +82,29 @@ namespace fir
 
         parse_result<double> parse_double() const
         {
+            #ifdef _MSC_VER
+            
             return parse_number<double>(string());
+            
+            #else // GCC & clang do not seem to support `std::from_chars` for floating point numbers.
+            
+            std::string s = m_input;
+            if (std::find_if(s.begin(), s.end(), isspace) != s.end())
+            {
+                return parse_result<double>(std::errc::invalid_argument, 0);
+            }
+            
+            char* end = nullptr;
+            double number = std::strtod(s.c_str(), &end);
+
+            if (!end || *end != '\0')
+            {
+                return parse_result<double>(std::errc::invalid_argument, 0);
+            }
+
+            return parse_result<double>(std::errc(), number);
+
+            #endif
         }
 
     private:
