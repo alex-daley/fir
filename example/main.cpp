@@ -6,7 +6,7 @@ int main()
 
     auto result = console::readln()
         .trim()
-        .parse_int();
+        .parse_int().between(0, 3);
 
     if (result)
     {

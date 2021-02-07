@@ -106,3 +106,62 @@ TEST_CASE("readln_result::parse_double parses double", "[readln_result]")
         REQUIRE(result.parse_double() == false);
     }
 }
+
+TEST_CASE("parse_result::between return indicates error when values are out of range")
+{
+    SECTION("errc::result_out_of_range when value is less than lower bound")
+    {
+        const auto result = fir::parse_result(std::errc(), 42).between(43, 100);
+        REQUIRE(result.err() == std::errc::result_out_of_range);
+    }
+    SECTION("errc::result_out_of_range when value is greater than upper bound")
+    {
+        const auto result = fir::parse_result(std::errc(), 42).between(0, 41);
+        REQUIRE(result.err() == std::errc::result_out_of_range);
+    }
+}
+
+TEST_CASE("parse_result::between returns success result when integer is in range")
+{
+    SECTION("no error and same value when integer is inside range")
+    {
+        constexpr auto expected = 42;
+        const auto result = fir::parse_result(std::errc(), expected)
+            .between(0, 100);
+
+        REQUIRE(result);
+        REQUIRE(*result == expected);
+    }
+    SECTION("no error and same value when integer is at bounds")
+    {
+        constexpr auto expected = 42;
+        const auto result = fir::parse_result(std::errc(), expected)
+            .between(expected, expected);
+
+        REQUIRE(result);
+        REQUIRE(*result == 42);
+    }
+}
+
+
+TEST_CASE("parse_result::between returns success result when double is in range")
+{
+    SECTION("no error and same value when double is inside range")
+    {
+        constexpr auto expected = 3.14159265359;
+        const auto result = fir::parse_result(std::errc(), expected)
+            .between(expected, 100);
+
+        REQUIRE(result);
+        REQUIRE(*result == expected);
+    }
+    SECTION("no error and same value when double is at bounds")
+    {
+        constexpr auto expected = 3.14159265359;
+        const auto result = fir::parse_result(std::errc(), expected)
+            .between(expected, expected);
+
+        REQUIRE(result);
+        REQUIRE(*result == expected);
+    }
+}

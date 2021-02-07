@@ -40,6 +40,16 @@ namespace fir
             return m_value;
         }
 
+        parse_result<T> between(T min, T max) const
+        {
+            if (m_value < min || m_value > max)
+            {
+                return parse_result(std::errc::result_out_of_range, 0);
+            }
+
+            return *this;
+        }
+
     private:
         std::errc m_err;
         T m_value;
