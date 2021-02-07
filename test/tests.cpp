@@ -12,7 +12,7 @@ TEST_CASE("console::readln reads line of text from std::cin", "[console]")
     // Testing...
     constexpr auto expected = "Hello world!"; 
     in << expected;
-    REQUIRE(fir::console::readln().string() == expected);
+    REQUIRE(fir::console::read_line().string() == expected);
 
     // Restore default `std::cin`.
     std::cin.rdbuf(initial_cin);

@@ -133,14 +133,14 @@ namespace fir
 
     namespace console
     {
-        readln_result readln()
+        readln_result read_line()
         {
             std::string line;
             std::getline(std::cin, line);
             return line;
         }
 
-        void writeln(const char* format, ...)
+        void write_line(const char* format, ...)
         {
             va_list args;
             va_start(args, format);
